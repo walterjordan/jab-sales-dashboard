@@ -30,21 +30,33 @@ This document serves as the active blueprint for the autonomous execution of the
 
 ## 2. Where We Are Going (Next Steps)
 
-### Phase 8: Sales Control Room & Campaign Manager (CURRENT)
-The `jab-cloud-gateway` Next.js frontend will become the central "Control Room" for the entire OS, acting as both an analytics viewer and a campaign launcher.
-- [x] **Scaffold Next.js App Route Structure:** Implemented fixed Sidebar navigation, Layout shell, and integrated Lucide icons.
-- [x] **Dashboard Home (Overview):** Built high-level metrics pulling from Airtable (Total Leads, High Intent, Tasks, Revenue).
-- [x] **Unified Inbox View:** Implemented a real-time message stream viewer in `/inbox` that correctly distinguishes between SMS and Messenger channels and displays chronological history per lead.
+### Phase 8: Sales Control Room & Campaign Manager (COMPLETED)
+The `jab-cloud-gateway` Next.js frontend is now the central "Control Room" for the entire OS, acting as both an analytics viewer and a campaign launcher.
+- [x] **Scaffold Next.js App Route Structure:** Implemented fixed Sidebar navigation, Layout shell, and integrated custom JAB branding icons.
+- [x] **Dashboard Home (Overview):** Built high-level metrics pulling from Airtable (Total Leads, High Intent, Tasks, Revenue). Added interactive `TaskRow` components that allow humans to clear pending follow-up queue items via Server Actions.
+- [x] **Unified Inbox View:** Implemented a real-time message stream viewer in `/inbox` that correctly distinguishes between SMS and Messenger channels.
+- [x] **Human Takeover:** Added real-time SMS/Messenger sending capabilities directly inside the Unified Inbox. Messages sent by humans are logged into the same timeline as the AI, allowing the human and AI to seamlessly tag-team a conversation.
 - [x] **Lead Management Table:** Implemented the initial `/leads` page displaying all active prospects from Airtable.
-- [x] **Campaign Launcher:** UI to start a new day by reviewing who to follow up with, what emails/texts will be sent out, and viewing responses from the previous day.
+- [x] **Campaign Launcher:** UI built to start a new day by configuring Google Places target queries and visualizing AI Prospector deployment.
+- [x] **Custom Domain:** Mapped `sales.jordanborden.com` to the Cloud Run service.
 
-### Phase 9: Automated Outbound Lead Generation & Enrichment (NEW)
-We are building a completely automated system that researches leads and communicates digitally end-to-end.
-- [ ] **Business Discovery (Google Places API):** Build an internal Next.js API route that accepts a query (e.g., "roofing contractor atlanta") and uses the Google Places API to fetch business names, websites, and phone numbers.
-- [ ] **Email Enrichment (Hunter.io / Apollo.io):** Take the domains discovered by Google Places and programmatically pass them to an enrichment API (like Hunter or Apollo) to find verified business email addresses.
-- [ ] **Database Ingestion:** Automatically store these enriched profiles into the Airtable `Leads` table tagged as "Cold Leads".
-- [ ] **Email Infrastructure Integration:** Integrate an Email API (e.g., Resend, SendGrid) to send outbound emails and set up an inbound email webhook to route replies back into our `handleCanonicalEvent` flow, allowing the AI to auto-respond to emails just like it does for SMS/Messenger.
-- [ ] **Human-in-the-Loop:** If the AI determines a human is needed to close a high-value prospect, it will use the `request_handoff` tool, which will be configured to send a direct SMS alert to Walter (770-313-2589).
+### Phase 9: Automated Outbound Lead Generation & Enrichment (COMPLETED)
+We have built a completely automated system that researches leads and communicates digitally end-to-end.
+- [x] **Business Discovery (Google Places API):** Implemented an internal Next.js API route that accepts a query (e.g., "roofing contractor atlanta") and uses the Google Places API to fetch business names, websites, and phone numbers.
+- [x] **Email Enrichment (Hunter.io):** Integrated Hunter.io to automatically turn websites found via Google Places into verified decision-maker email addresses before reaching out.
+- [x] **Database Ingestion:** Automated the storage of these enriched profiles into the Airtable `Leads` table tagged as "Cold Leads".
+- [x] **Outreach Automation:** Built the `/api/outreach` trigger which uses the AI Sales Master to generate a personalized, niche-specific SMS hook and fires it via TextLink immediately.
+- [x] **Human-in-the-Loop:** Added a "Start AI Outreach" button to the Dashboard, allowing for one-click deployment of the outreach sequence per lead.
+
+---
+
+## 2. Where We Are Going (Next Steps)
+
+### Phase 10: Scaling & Multi-Agent Collaboration
+- [ ] **Automated Sequence Manager:** Build a background worker that automatically triggers the next outreach step (e.g., Email if SMS fails) after 24 hours of no response.
+- [ ] **Campaign Analytics Dashboard:** Add visual charts to the Control Room showing response rates per niche and city.
+- [ ] **Multi-Agent Teams:** Split the agent into specialized sub-agents: "The Researcher" (Places + Hunter), "The Outreach Specialist" (First Hook), and "The Closer" (Sales context).
+
 
 ---
 
