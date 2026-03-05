@@ -36,7 +36,7 @@ The `jab-cloud-gateway` Next.js frontend will become the central "Control Room" 
 - [x] **Dashboard Home (Overview):** Built high-level metrics pulling from Airtable (Total Leads, High Intent, Tasks, Revenue).
 - [x] **Unified Inbox View:** Implemented a real-time message stream viewer in `/inbox` that correctly distinguishes between SMS and Messenger channels and displays chronological history per lead.
 - [x] **Lead Management Table:** Implemented the initial `/leads` page displaying all active prospects from Airtable.
-- [ ] **Campaign Launcher:** UI to start a new day by reviewing who to follow up with, what emails/texts will be sent out, and viewing responses from the previous day.
+- [x] **Campaign Launcher:** UI to start a new day by reviewing who to follow up with, what emails/texts will be sent out, and viewing responses from the previous day.
 
 ### Phase 9: Automated Outbound Lead Generation & Enrichment (NEW)
 We are building a completely automated system that researches leads and communicates digitally end-to-end.
