@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "notebooklm": {
+      "command": "C:/Users/Walt J/github/ai-mastermind-app/.venv/Scripts/python.exe",
+      "args": [
+        "-m",
+        "notebooklm_tools.mcp.server"
+      ],
+      "env": {
+        "NOTEBOOKLM_MCP_TRANSPORT": "stdio"
+      }
+    }
+  }
+}

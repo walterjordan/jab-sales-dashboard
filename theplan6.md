@@ -3,7 +3,7 @@
 > **🛑 HOW TO RESUME IN YOUR NEXT SESSION**
 > 1. Provide the agent with this exact prompt: *"We are resuming work on the JAB Sales Agent. Please read `theplan6.md` to get caught up."*
 
-This document serves as the active blueprint for the autonomous execution of the JAB Cloud-First Customer Engagement + Sales OS. It reflects the successful deployment of the Make.com routing logic, live Messenger end-to-end testing, memory integration, and Stripe checkout automation.
+This document serves as the active blueprint for the autonomous execution of the JAB Cloud-First Customer Engagement + Sales OS. It reflects the successful deployment of the Make.com routing logic, live Messenger end-to-end testing, memory integration, Stripe checkout automation, and the new architecture for automated lead generation.
 
 ## 1. Where We Are (Accomplishments)
 
@@ -16,12 +16,9 @@ This document serves as the active blueprint for the autonomous execution of the
 - **Live Messenger Testing (COMPLETED):**
   - Successfully connected the live Facebook Page to the Cloud Run gateway.
   - Implemented Idempotency and Background processing to eliminate duplicate webhook triggers from Facebook.
-  - Successfully resolved Agent Memory issues by optimizing Airtable Linked Record queries in `get_conversation_context`. The Agent now perfectly remembers user details and context across messages.
-  - Successfully resolved Stripe Checkout validation errors (handling missing emails properly) and enforced strict Sales Stage updating logic.
+  - Successfully resolved Agent Memory issues by optimizing Airtable Linked Record queries. The Agent now remembers user details and context across messages.
+  - Successfully resolved Stripe Checkout validation errors and enforced strict Sales Stage updating logic.
   - The End-to-End flow (Greeting -> Capturing Info -> Generating $199 EdgeMax AI Core Stripe Link) is verified and live.
-- **Live SMS Testing (NEXT):** Need to verify live SMS flows via TextLink API.
-- **Facebook Ad Flow Integration (NEXT):** Set up a "Click-to-Messenger" ad. Pre-populate the user's initial message.
-- **Lead Ads (Optional):** If using Instant Forms, build a specific `leadgen` webhook.
 
 ---
 
@@ -31,10 +28,20 @@ This document serves as the active blueprint for the autonomous execution of the
 - [ ] **Live SMS Testing:** Send a real SMS to the TextLink number to ensure the gateway creates leads via phone number and responds correctly.
 - [ ] **Click-to-Messenger Ad Setup:** Define the exact entry payload/greeting for Ad traffic so the Agent knows to immediately pitch EdgeMax AI Core.
 
-### Phase 8: Hardening, Analytics & Dashboard Completion
-- [ ] **Dashboard Timeline View:** Update the Next.js Control Room to show the unified `Conversation Messages` timeline directly in the UI (currently it fetches history on demand).
-- [ ] **Compliance & Rate Limits:** Implement strict DNC (Do Not Call/Text) handling for "STOP" keywords and enforce quiet hours (e.g., no automated SMS between 8 PM and 8 AM).
-- [ ] **Analytics:** Add simple conversion tracking to the dashboard (e.g., Capture Rate, Workshop Booking Rate, Edge Core Close Rate).
+### Phase 8: Sales Control Room & Campaign Manager
+The `jab-cloud-gateway` Next.js frontend will become the central "Control Room" for the entire OS, acting as both an analytics viewer and a campaign launcher.
+- [ ] **Dashboard Timeline View:** Show the unified `Conversation Messages` timeline directly in the UI.
+- [ ] **Campaign Launcher:** UI to start a new day by reviewing who to follow up with, what emails/texts will be sent out, and viewing responses from the previous day.
+- [ ] **Analytics:** Add conversion tracking (e.g., Capture Rate, Workshop Booking Rate, Edge Core Close Rate).
+- [ ] **Compliance & Rate Limits:** Implement strict DNC (Do Not Call/Text) handling for "STOP" keywords.
+
+### Phase 9: Automated Outbound Lead Generation & Enrichment (NEW)
+We are building a completely automated system that researches leads and communicates digitally end-to-end.
+- [ ] **Business Discovery (Google Places API):** Build an internal Next.js API route that accepts a query (e.g., "roofing contractor atlanta") and uses the Google Places API to fetch business names, websites, and phone numbers.
+- [ ] **Email Enrichment (Hunter.io / Apollo.io):** Take the domains discovered by Google Places and programmatically pass them to an enrichment API (like Hunter or Apollo) to find verified business email addresses.
+- [ ] **Database Ingestion:** Automatically store these enriched profiles into the Airtable `Leads` table tagged as "Cold Leads".
+- [ ] **Email Infrastructure Integration:** Integrate an Email API (e.g., Resend, SendGrid) to send outbound emails and set up an inbound email webhook to route replies back into our `handleCanonicalEvent` flow, allowing the AI to auto-respond to emails just like it does for SMS/Messenger.
+- [ ] **Human-in-the-Loop:** If the AI determines a human is needed to close a high-value prospect, it will use the `request_handoff` tool, which will be configured to send a direct SMS alert to Walter (770-313-2589).
 
 ---
 

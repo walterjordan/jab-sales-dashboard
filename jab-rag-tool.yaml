@@ -1,0 +1,34 @@
+openapi: 3.0.0
+info:
+  title: Jab RAG Tool
+  description: A tool that retrieves information from the Jab RAG database.
+  version: 1.0.0
+servers:
+  - url: https://jab-rag-695867930963.us-east1.run.app
+paths:
+  /:
+    post:
+      summary: Query the RAG knowledge base
+      operationId: queryJabRag
+      requestBody:
+        description: The user's query to search for.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: The question or search term from the user.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    description: The answer found in the database.

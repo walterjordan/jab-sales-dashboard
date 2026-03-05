@@ -1,0 +1,1407 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NotebookLM MCP API",
+    "description": "API for interacting with Google NotebookLM via MCP. Generated for OpenAI Agent Builder.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://notebooklm-mcp-4w2x2slmya-uc.a.run.app"
+    }
+  ],
+  "paths": {
+    "/download_artifact": {
+      "post": {
+        "operationId": "download_artifact",
+        "summary": "Download any NotebookLM artifact to a file.",
+        "description": "Download any NotebookLM artifact to a file.\n\nUnified download tool replacing 9 separate download tools.\nSupports all artifact types: audio, video, report, mind_map, slide_deck,\ninfographic, data_table, quiz, flashcards.\n\nArgs:\n    notebook_id: Notebook UUID\n    artifact_type: Type of artifact to download:\n        - audio: Audio Overview (MP4/MP3)\n        - video: Video Overview (MP4)\n        - report: Report (Markdown)\n        - mind_map: Mind Map (JSON)\n        - slide_deck: Slide Deck (PDF or PPTX)\n        - infographic: Infographic (PNG)\n        - data_table: Data Table (CSV)\n        - quiz: Quiz (json|markdown|html)\n        - flashcards: Flashcards (json|markdown|html)\n    output_path: Path to save the file\n    artifact_id: Optional specific artifact ID (uses latest if not provided)\n    output_format: For quiz/flashcards only: json|markdown|html (default: json)\n    slide_deck_format: For slide_deck only: pdf (default) or pptx\n\nReturns:\n    dict with status and saved file path\n\nExample:\n    download_artifact(notebook_id=\"abc123\", artifact_type=\"audio\", output_path=\"podcast.mp3\")\n    download_artifact(notebook_id=\"abc123\", artifact_type=\"quiz\", output_path=\"quiz.html\", output_format=\"html\")\n    download_artifact(notebook_id=\"abc123\", artifact_type=\"slide_deck\", output_path=\"slides.pptx\", slide_deck_format=\"pptx\")",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "artifact_type": {
+                    "type": "string"
+                  },
+                  "output_path": {
+                    "type": "string"
+                  },
+                  "artifact_id": {
+                    "type": "string"
+                  },
+                  "output_format": {
+                    "type": "string"
+                  },
+                  "slide_deck_format": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notebook_id",
+                  "artifact_type",
+                  "output_path"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/refresh_auth": {
+      "post": {
+        "operationId": "refresh_auth",
+        "summary": "Reload auth tokens from disk or run headless re-authentication.",
+        "description": "Reload auth tokens from disk or run headless re-authentication.\n\nCall this after running `nlm login` to pick up new tokens,\nor to attempt automatic re-authentication if Chrome profile has saved login.\n\nReturns status indicating if tokens were refreshed successfully.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/save_auth_tokens": {
+      "post": {
+        "operationId": "save_auth_tokens",
+        "summary": "Save NotebookLM cookies (FALLBACK method - try `nlm login` first!).",
+        "description": "Save NotebookLM cookies (FALLBACK method - try `nlm login` first!).\n\nIMPORTANT FOR AI ASSISTANTS:\n- First, run `nlm login` via Bash/terminal (automated, preferred)\n- Only use this tool if the automated CLI fails\n\nArgs:\n    cookies: Cookie header from Chrome DevTools (only needed if CLI fails)\n    csrf_token: Deprecated - auto-extracted\n    session_id: Deprecated - auto-extracted\n    request_body: Optional - contains CSRF if extracting manually\n    request_url: Optional - contains session ID if extracting manually",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cookies": {
+                    "type": "string"
+                  },
+                  "csrf_token": {
+                    "type": "string"
+                  },
+                  "session_id": {
+                    "type": "string"
+                  },
+                  "request_body": {
+                    "type": "string"
+                  },
+                  "request_url": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "cookies"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notebook_list": {
+      "post": {
+        "operationId": "notebook_list",
+        "summary": "List all notebooks.",
+        "description": "List all notebooks.\n\nArgs:\n    max_results: Maximum number of notebooks to return (default: 100)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "max_results": {
+                    "type": "integer"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notebook_get": {
+      "post": {
+        "operationId": "notebook_get",
+        "summary": "Get notebook details with sources.",
+        "description": "Get notebook details with sources.\n\nArgs:\n    notebook_id: Notebook UUID",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notebook_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notebook_describe": {
+      "post": {
+        "operationId": "notebook_describe",
+        "summary": "Get AI-generated notebook summary with suggested topics.",
+        "description": "Get AI-generated notebook summary with suggested topics.\n\nArgs:\n    notebook_id: Notebook UUID\n\nReturns: summary (markdown), suggested_topics list",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notebook_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notebook_create": {
+      "post": {
+        "operationId": "notebook_create",
+        "summary": "Create a new notebook.",
+        "description": "Create a new notebook.\n\nArgs:\n    title: Optional title for the notebook",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notebook_rename": {
+      "post": {
+        "operationId": "notebook_rename",
+        "summary": "Rename a notebook.",
+        "description": "Rename a notebook.\n\nArgs:\n    notebook_id: Notebook UUID\n    new_title: New title",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "new_title": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notebook_id",
+                  "new_title"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notebook_delete": {
+      "post": {
+        "operationId": "notebook_delete",
+        "summary": "Delete notebook permanently. IRREVERSIBLE. Requires confirm=True.",
+        "description": "Delete notebook permanently. IRREVERSIBLE. Requires confirm=True.\n\nArgs:\n    notebook_id: Notebook UUID\n    confirm: Must be True after user approval",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "confirm": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "notebook_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/source_add": {
+      "post": {
+        "operationId": "source_add",
+        "summary": "Add a source to a notebook. Unified tool for all source types.",
+        "description": "Add a source to a notebook. Unified tool for all source types.\n\nSupports: url, text, drive, file\n\nArgs:\n    notebook_id: Notebook UUID\n    source_type: Type of source to add:\n        - url: Web page or YouTube URL\n        - text: Pasted text content\n        - drive: Google Drive document\n        - file: Local file upload (PDF, text, audio)\n    url: URL to add (for source_type=url)\n    urls: List of URLs to add in bulk (for source_type=url, alternative to url)\n    text: Text content to add (for source_type=text)\n    title: Display title (for text sources)\n    file_path: Local file path (for source_type=file)\n    document_id: Google Drive document ID (for source_type=drive)\n    doc_type: Drive doc type: doc|slides|sheets|pdf (for source_type=drive)\n    wait: If True, wait for source processing to complete before returning\n    wait_timeout: Max seconds to wait if wait=True (default 120)\n\nExample:\n    source_add(notebook_id=\"abc\", source_type=\"url\", url=\"https://example.com\")\n    source_add(notebook_id=\"abc\", source_type=\"url\", urls=[\"https://a.com\", \"https://b.com\"])\n    source_add(notebook_id=\"abc\", source_type=\"url\", url=\"https://example.com\", wait=True)\n    source_add(notebook_id=\"abc\", source_type=\"file\", file_path=\"/path/to/doc.pdf\", wait=True)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "source_type": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  },
+                  "urls": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "file_path": {
+                    "type": "string"
+                  },
+                  "document_id": {
+                    "type": "string"
+                  },
+                  "doc_type": {
+                    "type": "string"
+                  },
+                  "wait": {
+                    "type": "boolean"
+                  },
+                  "wait_timeout": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "notebook_id",
+                  "source_type"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/source_list_drive": {
+      "post": {
+        "operationId": "source_list_drive",
+        "summary": "List sources with types and Drive freshness status.",
+        "description": "List sources with types and Drive freshness status.\n\nUse before source_sync_drive to identify stale sources.\n\nArgs:\n    notebook_id: Notebook UUID",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notebook_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/source_sync_drive": {
+      "post": {
+        "operationId": "source_sync_drive",
+        "summary": "Sync Drive sources with latest content. Requires confirm=True.",
+        "description": "Sync Drive sources with latest content. Requires confirm=True.\n\nCall source_list_drive first to identify stale sources.\n\nArgs:\n    source_ids: Source UUIDs to sync\n    confirm: Must be True after user approval",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "source_ids": {
+                    "type": "string"
+                  },
+                  "confirm": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "source_ids"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/source_rename": {
+      "post": {
+        "operationId": "source_rename",
+        "summary": "Rename a source in a notebook.",
+        "description": "Rename a source in a notebook.\n\nArgs:\n    notebook_id: Notebook UUID containing the source\n    source_id: Source UUID to rename\n    new_title: New display title for the source",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "source_id": {
+                    "type": "string"
+                  },
+                  "new_title": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notebook_id",
+                  "source_id",
+                  "new_title"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/source_delete": {
+      "post": {
+        "operationId": "source_delete",
+        "summary": "Delete source(s) permanently. IRREVERSIBLE. Requires confirm=True.",
+        "description": "Delete source(s) permanently. IRREVERSIBLE. Requires confirm=True.\n\nArgs:\n    source_id: Source UUID to delete (single)\n    source_ids: List of source UUIDs to delete (bulk, alternative to source_id)\n    confirm: Must be True after user approval",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "source_id": {
+                    "type": "string"
+                  },
+                  "source_ids": {
+                    "type": "string"
+                  },
+                  "confirm": {
+                    "type": "boolean"
+                  }
+                },
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/source_describe": {
+      "post": {
+        "operationId": "source_describe",
+        "summary": "Get AI-generated source summary with keyword chips.",
+        "description": "Get AI-generated source summary with keyword chips.\n\nArgs:\n    source_id: Source UUID\n\nReturns: summary (markdown with **bold** keywords), keywords list",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "source_id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "source_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/source_get_content": {
+      "post": {
+        "operationId": "source_get_content",
+        "summary": "Get raw text content of a source (no AI processing).",
+        "description": "Get raw text content of a source (no AI processing).\n\nReturns the original indexed text from PDFs, web pages, pasted text,\nor YouTube transcripts. Much faster than notebook_query for content export.\n\nArgs:\n    source_id: Source UUID\n\nReturns: content (str), title (str), source_type (str), char_count (int)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "source_id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "source_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notebook_share_status": {
+      "post": {
+        "operationId": "notebook_share_status",
+        "summary": "Get current sharing settings and collaborators.",
+        "description": "Get current sharing settings and collaborators.\n\nArgs:\n    notebook_id: Notebook UUID\n\nReturns: is_public, access_level, collaborators list, and public_link if public",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notebook_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notebook_share_public": {
+      "post": {
+        "operationId": "notebook_share_public",
+        "summary": "Enable or disable public link access.",
+        "description": "Enable or disable public link access.\n\nArgs:\n    notebook_id: Notebook UUID\n    is_public: True to enable public link, False to disable (default: True)\n\nReturns: public_link if enabled, None if disabled",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "is_public": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "notebook_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notebook_share_invite": {
+      "post": {
+        "operationId": "notebook_share_invite",
+        "summary": "Invite a collaborator by email.",
+        "description": "Invite a collaborator by email.\n\nArgs:\n    notebook_id: Notebook UUID\n    email: Email address to invite\n    role: \"viewer\" or \"editor\" (default: viewer)\n\nReturns: success status",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notebook_id",
+                  "email"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/research_start": {
+      "post": {
+        "operationId": "research_start",
+        "summary": "Deep research / fast research: Search web or Google Drive to FIND NEW sources.",
+        "description": "Deep research / fast research: Search web or Google Drive to FIND NEW sources.\n\nUse this for: \"deep research on X\", \"find sources about Y\", \"search web for Z\", \"search Drive\".\nWorkflow: research_start -> poll research_status -> research_import.\n\nArgs:\n    query: What to search for (e.g. \"quantum computing advances\")\n    source: web|drive (where to search)\n    mode: fast (~30s, ~10 sources) | deep (~5min, ~40 sources, web only)\n    notebook_id: Existing notebook (creates new if not provided)\n    title: Title for new notebook",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "query": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "string"
+                  },
+                  "mode": {
+                    "type": "string"
+                  },
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "query"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/research_status": {
+      "post": {
+        "operationId": "research_status",
+        "summary": "Poll research progress. Blocks until complete or timeout.",
+        "description": "Poll research progress. Blocks until complete or timeout.\n\nArgs:\n    notebook_id: Notebook UUID\n    poll_interval: Seconds between polls (default: 30)\n    max_wait: Max seconds to wait (default: 300, 0=single poll)\n    compact: If True (default), truncate report and limit sources shown to save tokens.\n            Use compact=False to get full details.\n    task_id: Optional Task ID to poll for a specific research task.\n    query: Optional query text for fallback matching when task_id changes (deep research).\n        Contributed by @saitrogen (PR #15).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "poll_interval": {
+                    "type": "integer"
+                  },
+                  "max_wait": {
+                    "type": "integer"
+                  },
+                  "compact": {
+                    "type": "boolean"
+                  },
+                  "task_id": {
+                    "type": "string"
+                  },
+                  "query": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notebook_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/research_import": {
+      "post": {
+        "operationId": "research_import",
+        "summary": "Import discovered sources into notebook.",
+        "description": "Import discovered sources into notebook.\n\nCall after research_status shows status=\"completed\".\n\nArgs:\n    notebook_id: Notebook UUID\n    task_id: Research task ID\n    source_indices: Source indices to import (default: all)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "task_id": {
+                    "type": "string"
+                  },
+                  "source_indices": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "notebook_id",
+                  "task_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/studio_create": {
+      "post": {
+        "operationId": "studio_create",
+        "summary": "Create any NotebookLM studio artifact. Unified creation tool.",
+        "description": "Create any NotebookLM studio artifact. Unified creation tool.\n\nSupports: audio, video, infographic, slide_deck, report, flashcards, quiz, data_table, mind_map\n\nArgs:\n    notebook_id: Notebook UUID\n    artifact_type: Type of artifact to create:\n        - audio: Audio Overview (podcast)\n        - video: Video Overview\n        - infographic: Visual infographic\n        - slide_deck: Presentation slides (PDF)\n        - report: Text report (Briefing Doc, Study Guide, etc.)\n        - flashcards: Study flashcards\n        - quiz: Multiple choice quiz\n        - data_table: Structured data table\n        - mind_map: Visual mind map\n    source_ids: Source IDs to use (default: all sources)\n    confirm: Must be True after user approval\n\n    Type-specific options:\n    - audio: audio_format (deep_dive|brief|critique|debate), audio_length (short|default|long)\n    - video: video_format (explainer|brief), visual_style (auto_select|classic|whiteboard|kawaii|anime|watercolor|retro_print|heritage|paper_craft)\n    - infographic: orientation (landscape|portrait|square), detail_level (concise|standard|detailed)\n    - slide_deck: slide_format (detailed_deck|presenter_slides), slide_length (short|default)\n    - report: report_format (Briefing Doc|Study Guide|Blog Post|Create Your Own), custom_prompt\n    - flashcards: difficulty (easy|medium|hard)\n    - quiz: question_count (int), difficulty (easy|medium|hard)\n    - data_table: description (required)\n    - mind_map: title\n\n    Common options:\n    - language: BCP-47 code (en, es, fr, de, ja). Defaults to NOTEBOOKLM_HL env var or 'en'\n    - focus_prompt: Optional focus text\n\nExample:\n    studio_create(notebook_id=\"abc\", artifact_type=\"audio\", confirm=True)\n    studio_create(notebook_id=\"abc\", artifact_type=\"quiz\", question_count=5, confirm=True)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "artifact_type": {
+                    "type": "string"
+                  },
+                  "source_ids": {
+                    "type": "string"
+                  },
+                  "confirm": {
+                    "type": "boolean"
+                  },
+                  "audio_format": {
+                    "type": "string"
+                  },
+                  "audio_length": {
+                    "type": "string"
+                  },
+                  "video_format": {
+                    "type": "string"
+                  },
+                  "visual_style": {
+                    "type": "string"
+                  },
+                  "orientation": {
+                    "type": "string"
+                  },
+                  "detail_level": {
+                    "type": "string"
+                  },
+                  "slide_format": {
+                    "type": "string"
+                  },
+                  "slide_length": {
+                    "type": "string"
+                  },
+                  "report_format": {
+                    "type": "string"
+                  },
+                  "custom_prompt": {
+                    "type": "string"
+                  },
+                  "question_count": {
+                    "type": "integer"
+                  },
+                  "difficulty": {
+                    "type": "string"
+                  },
+                  "language": {
+                    "type": "string"
+                  },
+                  "focus_prompt": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notebook_id",
+                  "artifact_type"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/studio_status": {
+      "post": {
+        "operationId": "studio_status",
+        "summary": "Check studio content generation status and get URLs, or rename an artifact.",
+        "description": "Check studio content generation status and get URLs, or rename an artifact.\n\nArgs:\n    notebook_id: Notebook UUID\n    action: Action to perform:\n        - status (default): List all artifacts with their status and URLs\n        - rename: Rename an artifact (requires artifact_id and new_title)\n    artifact_id: Required for action=\"rename\" - the artifact UUID to rename\n    new_title: Required for action=\"rename\" - the new title for the artifact\n\nReturns:\n    Dictionary with status and results.\n    For action=\"status\":\n        - status: \"success\"\n        - artifacts: List of artifacts, each containing:\n            - artifact_id: UUID\n            - title: Artifact title\n            - type: audio, video, report, etc.\n            - status: completed, in_progress, failed\n            - url: URL to view/download (if applicable)\n            - custom_instructions: The custom prompt/focus instructions used to generate the artifact (if any)\n        - summary: Counts of total, completed, in_progress",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "action": {
+                    "type": "string"
+                  },
+                  "artifact_id": {
+                    "type": "string"
+                  },
+                  "new_title": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notebook_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/studio_delete": {
+      "post": {
+        "operationId": "studio_delete",
+        "summary": "Delete studio artifact. IRREVERSIBLE. Requires confirm=True.",
+        "description": "Delete studio artifact. IRREVERSIBLE. Requires confirm=True.\n\nArgs:\n    notebook_id: Notebook UUID\n    artifact_id: Artifact UUID (from studio_status)\n    confirm: Must be True after user approval",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "artifact_id": {
+                    "type": "string"
+                  },
+                  "confirm": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "notebook_id",
+                  "artifact_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/studio_revise": {
+      "post": {
+        "operationId": "studio_revise",
+        "summary": "Revise individual slides in an existing slide deck. Creates a NEW artifact.",
+        "description": "Revise individual slides in an existing slide deck. Creates a NEW artifact.\n\nOnly slide decks support revision. The original artifact is not modified.\nPoll studio_status after calling to check when the new deck is ready.\n\nArgs:\n    notebook_id: Notebook UUID\n    artifact_id: UUID of the existing slide deck to revise (from studio_status)\n    slide_instructions: List of revision instructions, each with:\n        - slide: Slide number (1-based, slide 1 = first slide)\n        - instruction: Text describing the desired change\n        Example: [{\"slide\": 1, \"instruction\": \"Make the title larger\"}]\n    confirm: Must be True after user approval\n\nExample:\n    studio_revise(\n        notebook_id=\"abc\",\n        artifact_id=\"xyz\",\n        slide_instructions=[\n            {\"slide\": 1, \"instruction\": \"Make the title larger\"},\n            {\"slide\": 3, \"instruction\": \"Remove the image\"}\n        ],\n        confirm=True\n    )",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "artifact_id": {
+                    "type": "string"
+                  },
+                  "slide_instructions": {
+                    "type": "string"
+                  },
+                  "confirm": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "notebook_id",
+                  "artifact_id",
+                  "slide_instructions"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notebook_query": {
+      "post": {
+        "operationId": "notebook_query",
+        "summary": "Ask AI about EXISTING sources already in notebook. NOT for finding new sources.",
+        "description": "Ask AI about EXISTING sources already in notebook. NOT for finding new sources.\n\nUse research_start instead for: deep research, web search, find new sources, Drive search.\n\nArgs:\n    notebook_id: Notebook UUID\n    query: Question to ask\n    source_ids: Source IDs to query (default: all)\n    conversation_id: For follow-up questions\n    timeout: Request timeout in seconds (default: from env NOTEBOOKLM_QUERY_TIMEOUT or 120.0)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "query": {
+                    "type": "string"
+                  },
+                  "source_ids": {
+                    "type": "string"
+                  },
+                  "conversation_id": {
+                    "type": "string"
+                  },
+                  "timeout": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "notebook_id",
+                  "query"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chat_configure": {
+      "post": {
+        "operationId": "chat_configure",
+        "summary": "Configure notebook chat settings.",
+        "description": "Configure notebook chat settings.\n\nArgs:\n    notebook_id: Notebook UUID\n    goal: default|learning_guide|custom\n    custom_prompt: Required when goal=custom (max 10000 chars)\n    response_length: default|longer|shorter",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "goal": {
+                    "type": "string"
+                  },
+                  "custom_prompt": {
+                    "type": "string"
+                  },
+                  "response_length": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notebook_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/export_artifact": {
+      "post": {
+        "operationId": "export_artifact",
+        "summary": "Export a NotebookLM artifact to Google Docs or Sheets.",
+        "description": "Export a NotebookLM artifact to Google Docs or Sheets.\n\nSupports:\n- Data Tables \u2192 Google Sheets\n- Reports (Briefing Doc, Study Guide, Blog Post) \u2192 Google Docs\n\nArgs:\n    notebook_id: Notebook UUID\n    artifact_id: Artifact UUID to export\n    export_type: \"docs\" or \"sheets\"\n    title: Title for exported document (optional)\n\nReturns: URL to the created Google Doc/Sheet",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "artifact_id": {
+                    "type": "string"
+                  },
+                  "export_type": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notebook_id",
+                  "artifact_id",
+                  "export_type"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/note": {
+      "post": {
+        "operationId": "note",
+        "summary": "Manage notes in a notebook. Unified tool for all note operations.",
+        "description": "Manage notes in a notebook. Unified tool for all note operations.\n\nSupports: create, list, update, delete\n\nArgs:\n    notebook_id: Notebook UUID\n    action: Operation to perform:\n        - create: Create a new note\n        - list: List all notes in notebook\n        - update: Update an existing note\n        - delete: Delete a note permanently (requires confirm=True)\n    note_id: Note UUID (required for update/delete)\n    content: Note content (required for create, optional for update)\n    title: Note title (optional for create/update)\n    confirm: Must be True for delete action\n\nReturns:\n    Action-specific response with status\n\nExample:\n    note(notebook_id=\"abc\", action=\"list\")\n    note(notebook_id=\"abc\", action=\"create\", content=\"My note\", title=\"Title\")\n    note(notebook_id=\"abc\", action=\"update\", note_id=\"xyz\", content=\"Updated\")\n    note(notebook_id=\"abc\", action=\"delete\", note_id=\"xyz\", confirm=True)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notebook_id": {
+                    "type": "string"
+                  },
+                  "action": {
+                    "type": "string"
+                  },
+                  "note_id": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "confirm": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "notebook_id",
+                  "action"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/server_info": {
+      "post": {
+        "operationId": "server_info",
+        "summary": "Get server version and check for updates.",
+        "description": "Get server version and check for updates.\n\nAI assistants: If update_available is True, inform the user that a new\nversion is available and suggest updating with the provided command.\n\nReturns:\n    dict with version info:\n    - version: Current installed version\n    - latest_version: Latest version on PyPI (or None if check failed)\n    - update_available: True if a newer version exists\n    - update_command: Command to run to update",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
