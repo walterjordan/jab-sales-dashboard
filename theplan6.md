@@ -32,10 +32,10 @@ This document serves as the active blueprint for the autonomous execution of the
 
 ### Phase 8: Sales Control Room & Campaign Manager (CURRENT)
 The `jab-cloud-gateway` Next.js frontend will become the central "Control Room" for the entire OS, acting as both an analytics viewer and a campaign launcher.
-- [ ] **Scaffold Next.js App Route Structure:** Ensure the `/src/app` directory has a proper layout with a Sidebar/Navigation shell for the dashboard.
-- [ ] **Dashboard Home (Overview):** Build high-level metrics pulling from Airtable (e.g., Total Leads, Active Conversations, Stripe Checkouts Pending/Complete).
-- [ ] **Unified Inbox View:** Update the Next.js Control Room to show the unified `Conversation Messages` timeline directly in the UI, combining SMS and Messenger streams per lead.
-- [ ] **Lead Management Table:** A datagrid view of the `Leads` table with quick actions (e.g., manually trigger a follow-up, mark as DNC, or take over conversation).
+- [x] **Scaffold Next.js App Route Structure:** Implemented fixed Sidebar navigation, Layout shell, and integrated Lucide icons.
+- [x] **Dashboard Home (Overview):** Built high-level metrics pulling from Airtable (Total Leads, High Intent, Tasks, Revenue).
+- [x] **Unified Inbox View:** Implemented a real-time message stream viewer in `/inbox` that correctly distinguishes between SMS and Messenger channels and displays chronological history per lead.
+- [x] **Lead Management Table:** Implemented the initial `/leads` page displaying all active prospects from Airtable.
 - [ ] **Campaign Launcher:** UI to start a new day by reviewing who to follow up with, what emails/texts will be sent out, and viewing responses from the previous day.
 
 ### Phase 9: Automated Outbound Lead Generation & Enrichment (NEW)

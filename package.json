@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "airtable": "^0.12.2"
+    "airtable": "^0.12.2",
+    "textlink-sms": "^0.0.3"
   },
   "devDependencies": {
     "@openai/agents": "^0.5.3",
