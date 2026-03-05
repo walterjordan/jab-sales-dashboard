@@ -12,28 +12,31 @@ This document serves as the active blueprint for the autonomous execution of the
 - **Google Calendar Integration:** The Make.com scenario automatically adds registered leads to the Free 90-min AI Workshop events when triggered by the agent.
 - **CRM Sync:** Workshop bookings and Follow-Up Tasks are now reliably synced to their respective Airtable (`Participants` and `Follow-Up Tasks`) tables.
 
-### Phase 7: Real-World Testing & Facebook Ad Flow (PARTIALLY COMPLETED)
+### Phase 7: Real-World Testing & Integration Fixes (COMPLETED)
 - **Live Messenger Testing (COMPLETED):**
   - Successfully connected the live Facebook Page to the Cloud Run gateway.
   - Implemented Idempotency and Background processing to eliminate duplicate webhook triggers from Facebook.
-  - Successfully resolved Agent Memory issues by optimizing Airtable Linked Record queries. The Agent now remembers user details and context across messages.
-  - Successfully resolved Stripe Checkout validation errors and enforced strict Sales Stage updating logic.
-  - The End-to-End flow (Greeting -> Capturing Info -> Generating $199 EdgeMax AI Core Stripe Link) is verified and live.
+- **Live SMS Testing & Integration (COMPLETED):**
+  - Successfully resolved TextLink Webhook 401 Unauthorized errors by properly implementing and validating webhook secrets.
+  - Hardcoded `sim_card_id` injection into custom Axios request for TextLink API because the official library lacks support for routing to specific device plans.
+  - Successfully tested SMS End-to-End flow: Gateway lead creation -> Agent triggering -> Live Stripe link generation via SMS.
+- **NotebookLM Brain Authentication (COMPLETED):**
+  - Resolved `HTTP 401/429` expiration and rate-limiting issues by regenerating fresh browser cookies via `nlm login` and deploying to a dedicated cloud MCP instance.
+  - Confirmed the Sales Agent successfully pulls live product inclusion data (EdgeMax AI CORE) directly from the notebook via SMS queries.
+- **Workshop Fallback System (COMPLETED):**
+  - Successfully tested the objection-handling pathway. Agent correctly abandoned the Stripe close, retrieved live Workshop dates from Airtable, captured missing email data, and executed the `book_workshop` tool.
 
 ---
 
 ## 2. Where We Are Going (Next Steps)
 
-### Phase 7.1: Finalizing Channel Tests (NEXT)
-- [ ] **Live SMS Testing:** Send a real SMS to the TextLink number to ensure the gateway creates leads via phone number and responds correctly.
-- [ ] **Click-to-Messenger Ad Setup:** Define the exact entry payload/greeting for Ad traffic so the Agent knows to immediately pitch EdgeMax AI Core.
-
-### Phase 8: Sales Control Room & Campaign Manager
+### Phase 8: Sales Control Room & Campaign Manager (CURRENT)
 The `jab-cloud-gateway` Next.js frontend will become the central "Control Room" for the entire OS, acting as both an analytics viewer and a campaign launcher.
-- [ ] **Dashboard Timeline View:** Show the unified `Conversation Messages` timeline directly in the UI.
+- [ ] **Scaffold Next.js App Route Structure:** Ensure the `/src/app` directory has a proper layout with a Sidebar/Navigation shell for the dashboard.
+- [ ] **Dashboard Home (Overview):** Build high-level metrics pulling from Airtable (e.g., Total Leads, Active Conversations, Stripe Checkouts Pending/Complete).
+- [ ] **Unified Inbox View:** Update the Next.js Control Room to show the unified `Conversation Messages` timeline directly in the UI, combining SMS and Messenger streams per lead.
+- [ ] **Lead Management Table:** A datagrid view of the `Leads` table with quick actions (e.g., manually trigger a follow-up, mark as DNC, or take over conversation).
 - [ ] **Campaign Launcher:** UI to start a new day by reviewing who to follow up with, what emails/texts will be sent out, and viewing responses from the previous day.
-- [ ] **Analytics:** Add conversion tracking (e.g., Capture Rate, Workshop Booking Rate, Edge Core Close Rate).
-- [ ] **Compliance & Rate Limits:** Implement strict DNC (Do Not Call/Text) handling for "STOP" keywords.
 
 ### Phase 9: Automated Outbound Lead Generation & Enrichment (NEW)
 We are building a completely automated system that researches leads and communicates digitally end-to-end.
