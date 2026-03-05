@@ -332,3 +332,350 @@ Phone Gateway
 ✅ If you want, I can also show you something **extremely useful for your automation business**:
 
 How to turn this into a **reusable AI receptionist template** you can deploy for different clients in about **5 minutes each** (the way agencies scale this).
+
+
+appended
+
+Below is a **clean Google-native setup using the Agent Development Kit (ADK)** that gives you an **AI receptionist with IVR + webhook triggers** and **does not involve Trello**.
+
+Stack:
+
+* **Dialogflow CX** – phone interface + IVR
+* **Cloud Run** – webhook runtime
+* **Google Agent Development Kit (ADK)** – AI reasoning / orchestration
+* **Your webhook / API endpoints** – automation
+
+Architecture:
+
+```
+Caller
+   ↓
+Dialogflow CX Phone Gateway
+   ↓
+Voice Menu / AI Conversation
+   ↓
+Intent detected OR key press
+   ↓
+Webhook → Cloud Run
+   ↓
+ADK Agent processes request
+   ↓
+Tool executes webhook
+   ↓
+Response returned to caller
+```
+
+---
+
+# 1. Dialogflow Handles the Phone Call
+
+Dialogflow CX provides:
+
+• phone number
+• speech recognition
+• text-to-speech
+• keypad detection (DTMF)
+
+Caller hears something like:
+
+```
+Welcome to Jordan & Borden Automation Consulting.
+
+Press 1 for automation services
+Press 2 for existing clients
+Press 3 to schedule a consultation
+Press 4 to leave a message
+
+Or simply tell me how I can help.
+```
+
+Either:
+
+```
+caller presses 1
+```
+
+or
+
+```
+caller says "I need automation consulting"
+```
+
+Both trigger the same intent.
+
+---
+
+# 2. Dialogflow Sends a Webhook
+
+When an intent fires, Dialogflow sends a request to your Cloud Run service.
+
+Example payload:
+
+```json
+{
+ "intentInfo": {
+   "displayName": "automation_services"
+ },
+ "sessionInfo": {
+   "parameters": {
+     "caller": "+14045551234"
+   }
+ }
+}
+```
+
+This request goes to your **ADK webhook service**.
+
+---
+
+# 3. Install the Agent Development Kit
+
+Create a Python project.
+
+Install packages:
+
+```bash
+pip install google-adk
+pip install google-cloud-aiplatform
+pip install flask
+```
+
+---
+
+# 4. Create the AI Receptionist Agent
+
+Example agent:
+
+```python
+from google.adk import Agent
+from google.adk.tools import tool
+import requests
+
+
+@tool
+def trigger_webhook(service_type: str, phone: str):
+
+    requests.post(
+        "https://your-webhook-endpoint.com",
+        json={
+            "service": service_type,
+            "phone": phone
+        }
+    )
+
+    return "Webhook triggered successfully."
+
+
+receptionist_agent = Agent(
+    name="ai_receptionist",
+    description="Handles incoming phone calls and routes requests.",
+    tools=[trigger_webhook]
+)
+```
+
+The agent can decide when to trigger the webhook.
+
+---
+
+# 5. Create the Cloud Run Webhook
+
+Create a simple Flask server.
+
+```python
+from flask import Flask, request
+from agent import receptionist_agent
+
+app = Flask(__name__)
+
+
+@app.route("/webhook", methods=["POST"])
+def webhook():
+
+    data = request.json
+
+    intent = data["intentInfo"]["displayName"]
+    phone = data["sessionInfo"]["parameters"].get("caller")
+
+    if intent == "automation_services":
+
+        receptionist_agent.tools["trigger_webhook"](
+            service_type="automation",
+            phone=phone
+        )
+
+        message = "Thanks! Someone from our automation team will contact you."
+
+    elif intent == "existing_client":
+
+        receptionist_agent.tools["trigger_webhook"](
+            service_type="support",
+            phone=phone
+        )
+
+        message = "Support has been notified."
+
+    else:
+
+        message = "Thank you for calling."
+
+    return {
+        "fulfillment_response": {
+            "messages": [
+                {
+                    "text": {
+                        "text": [message]
+                    }
+                }
+            ]
+        }
+    }
+```
+
+---
+
+# 6. Deploy to Cloud Run
+
+From your project directory:
+
+```bash
+gcloud run deploy ai-receptionist \
+--source . \
+--region us-central1 \
+--allow-unauthenticated
+```
+
+Cloud Run will give you a public URL like:
+
+```
+https://ai-receptionist-xyz.run.app/webhook
+```
+
+Add that URL in **Dialogflow CX → Webhooks**.
+
+---
+
+# 7. Connect the Phone Number
+
+In Dialogflow CX:
+
+```
+Manage
+Integrations
+Phone Gateway
+```
+
+Enable the integration.
+
+Google assigns a **phone number**.
+
+Now your IVR is live.
+
+---
+
+# Example Call Flow
+
+Caller dials the number.
+
+Dialogflow answers:
+
+```
+Welcome to Jordan & Borden Automation Consulting.
+Press 1 for automation services.
+Press 2 for existing clients.
+Press 3 to schedule a consultation.
+Press 4 to leave a message.
+```
+
+Caller presses **1**.
+
+Flow:
+
+```
+DTMF input
+↓
+Intent triggered
+↓
+Webhook call
+↓
+Cloud Run
+↓
+ADK agent triggers webhook
+↓
+External system notified
+```
+
+Caller hears:
+
+```
+Thanks! Someone from our automation team will contact you shortly.
+```
+
+---
+
+# What You Can Trigger
+
+Your webhook tool could call:
+
+```
+Make.com
+Slack
+CRM
+Google Sheets
+Airtable
+SMS service
+Email system
+calendar scheduling
+```
+
+Example automation:
+
+```
+Caller presses 3
+↓
+Webhook
+↓
+Create calendar booking link
+↓
+Send SMS confirmation
+```
+
+---
+
+# Cost Estimate
+
+Typical small business usage:
+
+| Service       | Cost                        |
+| ------------- | --------------------------- |
+| Dialogflow CX | ~$20 per 100 sessions       |
+| Cloud Run     | free tier covers most usage |
+| Phone Gateway | low per-minute cost         |
+
+Most setups run **under $20/month**.
+
+---
+
+# Important Tip
+
+For a **simple IVR**, ADK is optional.
+
+You only need ADK if you want the receptionist to:
+
+• ask follow-up questions
+• gather lead information
+• reason about requests
+• run multi-step workflows
+
+Otherwise Dialogflow CX alone can do IVR.
+
+---
+
+If you'd like, I can also show you **a very powerful pattern most Google developers miss**:
+
+How to build this **entire AI receptionist without Dialogflow at all**, using only:
+
+• **Google ADK**
+• **Gemini voice models**
+• **Cloud Run**
+
+It gives you **much more natural conversations than IVR systems.**
