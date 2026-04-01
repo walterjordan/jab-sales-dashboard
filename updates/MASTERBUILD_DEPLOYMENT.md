@@ -14,8 +14,8 @@ The JAB Sales Agent has been upgraded to a proactive, channel-aware Sales Associ
 ## 2. Required Cloud Secrets
 Before pushing the new `jab-sales-tools-mcp` to Google Cloud Run, you MUST add the following secrets to Google Cloud Secret Manager so the cloud container can access them:
 
-1. `GOOGLE_CLIENT_ID`
-2. `GOOGLE_CLIENT_SECRET`
+1. `GMAIL_CLIENT_ID`
+2. `GMAIL_CLIENT_SECRET`
 3. `GMAIL_REFRESH_TOKEN`
 4. `HUNTER_API_KEY`
 5. `TWILIO_ACCOUNT_SID`
