@@ -10,6 +10,7 @@ The JAB Sales Agent has been upgraded to a proactive, channel-aware Sales Associ
 - **Gmail API Integration:** The `send_email` tool in the MCP now utilizes real OAuth2 delivery via `support@jordanborden.com`, completely replacing the mocked version.
 - **Smart Routing Logic:** The system automatically defaults to SMS for mobile lines and falls back to a personalized AI-generated email for landlines.
 - **Dashboard UI Badges:** The `jab-cloud-gateway` now dynamically renders intelligence badges (`Mobile`, `Landline`, `Enriched`, `Unverified`) based on Airtable data.
+- **Universal Real-Time Alerts:** All inbound messages (SMS and Messenger) now automatically trigger a real-time SMS alert to `+17703132589`, containing the lead's name, channel, full message content, and a direct link to the dashboard for immediate human intervention.
 
 ## 2. Required Cloud Secrets
 Before pushing the new `jab-sales-tools-mcp` to Google Cloud Run, you MUST add the following secrets to Google Cloud Secret Manager so the cloud container can access them:
