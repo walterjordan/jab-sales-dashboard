@@ -1,0 +1,7 @@
+Write a follow-up message for someone who has not responded.
+
+Rules:
+- Acknowledge they may be busy
+- Be polite but direct
+- Include a soft CTA
+- Keep under 2 sentences

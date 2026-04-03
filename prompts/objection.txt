@@ -1,0 +1,8 @@
+Respond to this objection:
+
+{{message}}
+
+Rules:
+- Acknowledge concern
+- Reframe value
+- Keep under 3 sentences

@@ -1,0 +1,10 @@
+Classify this message:
+
+{{message}}
+
+Return ONLY one:
+INTERESTED
+NOT_INTERESTED
+OBJECTION
+BUSY
+UNKNOWN
